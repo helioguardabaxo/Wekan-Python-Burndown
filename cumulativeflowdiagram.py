@@ -17,6 +17,8 @@ import schedule
 import time
 from datetime import datetime
 
+from sqlalchemy import null
+
 os.environ["PYTHONIOENCODING"] = "utf-8"
 scriptLocale=locale.setlocale(category=locale.LC_ALL, locale="en_GB.UTF-8")
 
@@ -90,7 +92,14 @@ def job():
     print("\n=== Count Cards per List START ===")
     colletion = database['cards']
     items = []
-    thisdict =	{}
+    thisdict =	{
+        'Backlog': '',
+        'To do': '',
+        'Doing': '',
+        'Blocked': '',
+        'Done': '',
+        'date': null,
+    }
     print(thisdict)
 
     for boardList in boardLists:
@@ -125,7 +134,7 @@ def job():
     trans = df.transpose()
 
     
-    trans.to_csv(filename, mode='a', header=not os.path.exists(filename))
+    trans.to_csv(filename, mode='a', header=not os.path.exists(filename), index=False)
 
     print("=== Count Cards per List END ===\n")
 
@@ -226,7 +235,7 @@ def plot_cfd():
     print("\n=== Plot CFD START ===")
     df = pd.read_csv(filename, sep=",")
     print(df)
-    dados = df[['To do', 'Done', 'Doing']]
+    dados = df[['To do', 'Doing', 'Done']]
     print(dados)
 
 
@@ -246,7 +255,7 @@ def plot_cfd():
 
     # plt.stackplot(df['date'], df[df.columns.difference(['date', 'Unnamed: 0'])],
     fig = plt.figure(figsize=(8,5))
-    plt.stackplot(df['date'], df['Done'], df['To do'],  df['Doing'],
+    plt.stackplot(df['date'], df['Backlog'], df['To do'], df['Doing'], df['Blocked'], df['Done'], 
     # colors =['r', 'c', 'b'],
     labels=colunas
     # labels=['Done', 'To do']
