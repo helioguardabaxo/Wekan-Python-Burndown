@@ -62,7 +62,7 @@ with open(filename, 'w') as csvfile:
 # Set up database connection
 client = MongoClient(URL, PORT)
 db = client.wekan
-boardId = '84bMiYeP7kr3QCeYD'
+boardId = 'fC64YwSb7Ry4YrvNt'
 cards = db.cards.find({'boardId' : boardId}).sort("dateLastActivity")
 
 database = client["meteor"]
@@ -71,15 +71,15 @@ database = client["meteor"]
 
 print("\n=== Board Lists START ===")
 colletion = database['lists']
-documents = colletion.find({'boardId' : boardId})
+documents = colletion.find({'boardId' : boardId, 'archived' : False})
 boardLists = list(documents)
 print("=== Board Lists END ===\n")
 
-
+cardsPerList = list('')
 print("\n=== Cards per List START ===")
 colletion = database['cards']
 for boardList in boardLists:
-    documents = colletion.find({'boardId' : boardId, 'listId' : boardList["_id"]})
+    documents = colletion.find({'boardId' : boardId, 'listId' : boardList["_id"], 'archived' : False})
     cardsPerList = list(documents)
 print("=== Cards per List END ===\n")
 
@@ -275,7 +275,7 @@ def plot_cfd():
 schedule.every(60).seconds.do(job)
 # schedule.every().day.at("00:10").do(job)
 
-schedule.every(70).seconds.do(plot_cfd)
+# schedule.every(70).seconds.do(plot_cfd)
 # schedule.every().day.at("00:12").do(plot_cfd)
 
 
